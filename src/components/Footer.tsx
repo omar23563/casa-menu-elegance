@@ -43,7 +43,7 @@ const Footer = () => {
                 Visit Us
               </h3>
               <div className="space-y-3 text-muted-foreground">
-                <p>📍 Prés de Hms cosmétique, DOUZ-TUN </p>
+                <p>📍 Rue Matmata , Douz, Tunisia </p>
                 <p>📞 +216 27 218 690</p>
                 {/*<p>✉️ contact@lacasaplus.tn</p>*/}
               </div>
