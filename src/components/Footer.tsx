@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 
 const Footer = () => {
   const socialLinks = [
-    { icon: Facebook, label: "Facebook", href: "#" },
-    { icon: Instagram, label: "Instagram", href: "#" },
+    { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/share/1CkY3pAc5t/" },
+    { icon: Instagram, label: "Instagram", href: "https://www.facebook.com/share/1CkY3pAc5t/" },
     { icon: Music, label: "TikTok", href: "#" },
     { icon: MessageCircle, label: "WhatsApp", href: "#" },
   ];
@@ -27,13 +27,13 @@ const Footer = () => {
               </p>
             </div>
             
-            <div>
+             {/*<div>
               <h4 className="text-lg font-semibold text-white mb-2">Our Story</h4>
               <p className="text-muted-foreground">
                 Founded with a vision to bring together the best of café culture and fine dining, 
                 La Casa Plus has become a destination for those who appreciate quality, taste, and ambiance.
               </p>
-            </div>
+            </div>*/}
           </div>
 
           {/* Contact & Hours */}
@@ -43,18 +43,18 @@ const Footer = () => {
                 Visit Us
               </h3>
               <div className="space-y-3 text-muted-foreground">
-                <p>📍 Downtown Tunis, Tunisia</p>
+                <p>📍 Prés de Hms cosmétique, DOUZ-TUN </p>
                 <p>📞 +216 27 218 690</p>
-                <p>✉️ contact@lacasaplus.tn</p>
+                {/*<p>✉️ contact@lacasaplus.tn</p>*/}
               </div>
             </div>
             
             <div>
               <h4 className="text-lg font-semibold text-white mb-2">Opening Hours</h4>
               <div className="space-y-1 text-muted-foreground text-sm">
-                <p>Monday - Thursday: 7:00 AM - 11:00 PM</p>
-                <p>Friday - Saturday: 7:00 AM - 12:00 AM</p>
-                <p>Sunday: 8:00 AM - 10:00 PM</p>
+                <p>Monday - Sunday: 7:00 AM - 11:00 PM</p>
+                {/*<p>Friday - Saturday: 7:00 AM - 12:00 AM</p>
+                <p>Sunday: 8:00 AM - 10:00 PM</p>*/}
               </div>
             </div>
           </div>
@@ -87,12 +87,12 @@ const Footer = () => {
               </div>
             </div>
             
-            <div className="pt-6 border-t border-border">
+            {/*<div className="pt-6 border-t border-border">
               <h4 className="text-lg font-semibold text-white mb-2">Newsletter</h4>
               <p className="text-muted-foreground text-sm">
                 Subscribe for exclusive offers and updates
               </p>
-            </div>
+            </div>*/}
           </div>
         </div>
 
@@ -102,16 +102,16 @@ const Footer = () => {
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
               <span className="text-sm font-bold text-white">LC</span>
             </div>
-            <span className="font-heading font-semibold text-white">La Casa Plus</span>
+            <span className="font-heading font-semibold text-white">Quantro Tech</span>
           </div>
           
           <div className="text-center md:text-right">
             <p className="text-muted-foreground text-sm">
-              © 2024 La Casa Plus. All rights reserved.
+              © 2025 Quantro Tech. All rights reserved.
             </p>
-            <p className="text-muted-foreground text-xs mt-1">
+            {/*<p className="text-muted-foreground text-xs mt-1">
               Developed with ❤️ by Your Developer
-            </p>
+            </p>*/}
           </div>
         </div>
       </div>
