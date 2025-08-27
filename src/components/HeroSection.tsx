@@ -23,10 +23,15 @@ const HeroSection = () => {
       
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto animate-fade-in-up">
-        {/* Logo Placeholder */}
+        {/* Logo */}
         <div className="mb-8">
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-            <span className="text-3xl font-bold text-white">LC</span>
+          <div className="w-24 h-24 mx-auto mb-6">
+            {/* Replace this placeholder with your PNG logo */}
+            <img 
+              src="/logo.png" 
+              alt="La Casa Plus Logo" 
+              className="w-full h-full object-contain"
+            />
           </div>
           <h1 className="text-6xl md:text-7xl font-heading font-bold text-white mb-4">
             La Casa Plus
