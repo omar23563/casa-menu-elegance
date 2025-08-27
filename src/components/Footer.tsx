@@ -44,7 +44,7 @@ const Footer = () => {
               </h3>
               <div className="space-y-3 text-muted-foreground">
                 <p>📍 Downtown Tunis, Tunisia</p>
-                <p>📞 +216 XX XXX XXX</p>
+                <p>📞 +216 27 218 690</p>
                 <p>✉️ contact@lacasaplus.tn</p>
               </div>
             </div>
