@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Search, Filter, X, AlertCircle, Loader2 } from "lucide-react";
+import { Search, AlertCircle, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,56 +14,63 @@ type FilterType = 'all' | 'available' | 'discounted';
 const MenuSection = () => {
   const { categories, loading, error, refetch } = useMenuData();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<FilterType>('all');
 
-  const selectedCategoryData = selectedCategory 
-    ? categories.find(cat => cat.id === selectedCategory)
-    : null;
+  // Filter categories and dishes based on search term
+  const filteredCategories = useMemo(() => {
+    return categories.map(category => {
+      let dishes = category.dishes;
+      
+      // Apply search filter
+      if (searchTerm) {
+        dishes = dishes.filter(dish => 
+          dish.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (dish.description && dish.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          category.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+      
+      // Apply availability/discount filter
+      switch (filter) {
+        case 'available':
+          dishes = dishes.filter(dish => dish.available);
+          break;
+        case 'discounted':
+          dishes = dishes.filter(dish => {
+            return dish.discount_price && 
+              dish.discount_start && 
+              dish.discount_end &&
+              new Date() >= new Date(dish.discount_start) && 
+              new Date() <= new Date(dish.discount_end);
+          });
+          break;
+        default:
+          break;
+      }
+      
+      return {
+        ...category,
+        dishes,
+        originalDishCount: category.dishes.length
+      };
+    }).filter(category => 
+      // Show category if it has dishes after filtering or matches search
+      category.dishes.length > 0 || 
+      (!searchTerm || category.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  }, [categories, searchTerm, filter]);
 
-  const filteredDishes = useMemo(() => {
-    if (!selectedCategoryData) return [];
-    
-    let dishes = selectedCategoryData.dishes;
-    
-    // Apply search filter
-    if (searchTerm) {
-      dishes = dishes.filter(dish => 
-        dish.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (dish.description && dish.description.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-    
-    // Apply availability/discount filter
-    switch (filter) {
-      case 'available':
-        dishes = dishes.filter(dish => dish.available);
-        break;
-      case 'discounted':
-        dishes = dishes.filter(dish => {
-          return dish.discount_price && 
-            dish.discount_start && 
-            dish.discount_end &&
-            new Date() >= new Date(dish.discount_start) && 
-            new Date() <= new Date(dish.discount_end);
-        });
-        break;
-      default:
-        break;
-    }
-    
-    return dishes;
-  }, [selectedCategoryData, searchTerm, filter]);
-
-  const handleCategorySelect = (categoryId: string) => {
-    setSelectedCategory(categoryId);
-    setSearchTerm("");
-  };
-
-  const handleBackToCategories = () => {
-    setSelectedCategory(null);
-    setSearchTerm("");
-    setFilter('all');
+  const handleCategoryToggle = (categoryId: string) => {
+    setExpandedCategories(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(categoryId)) {
+        newSet.delete(categoryId);
+      } else {
+        newSet.add(categoryId);
+      }
+      return newSet;
+    });
   };
 
   // Show loading state
@@ -189,100 +196,68 @@ const MenuSection = () => {
           </div>
         </div>
 
-        {/* Category View */}
-        {!selectedCategory && (
-          <div className="animate-fade-in-up">
-            {/* Desktop Grid */}
-            <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8">
-              {categories.map((category) => (
-                <CategoryCard
-                  key={category.id}
-                  category={category}
-                  onClick={() => handleCategorySelect(category.id)}
-                  isActive={false}
-                />
-              ))}
-            </div>
-
-            {/* Mobile Carousel */}
-            <div className="md:hidden">
-              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                {categories.map((category) => (
-                  <div key={category.id} className="flex-shrink-0 w-80">
-                    <CategoryCard
-                      category={category}
-                      onClick={() => handleCategorySelect(category.id)}
-                      isActive={false}
-                    />
+        {/* Accordion-style Categories */}
+        <div className="animate-fade-in-up space-y-6">
+          {filteredCategories.map((category) => (
+            <div key={category.id} className="w-full">
+              {/* Category Card */}
+              <CategoryCard
+                category={category}
+                onClick={() => handleCategoryToggle(category.id)}
+                isExpanded={expandedCategories.has(category.id)}
+              />
+              
+              {/* Expanded Dishes */}
+              {expandedCategories.has(category.id) && category.dishes.length > 0 && (
+                <div className="mt-6 animate-expand">
+                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                    {category.dishes.map((dish) => (
+                      <DishCard key={dish.id} dish={dish} />
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Dishes View */}
-        {selectedCategory && selectedCategoryData && (
-          <div className="animate-fade-in-up">
-            {/* Category Header */}
-            <div className="flex items-center gap-4 mb-8">
-              <Button 
-                variant="outline" 
-                onClick={handleBackToCategories}
-                className="flex items-center gap-2"
-              >
-                <X className="h-4 w-4" />
-                Back to Categories
-              </Button>
-              <div>
-                <h3 className="text-2xl font-heading font-semibold text-white">
-                  {selectedCategoryData.name}
-                </h3>
-                <p className="text-muted-foreground">
-                  {selectedCategoryData.description}
-                </p>
-              </div>
-            </div>
-
-            {/* Results Info */}
-            <div className="flex items-center gap-4 mb-6">
-              <Badge variant="secondary">
-                {filteredDishes.length} dishes found
-              </Badge>
-              {searchTerm && (
-                <Badge variant="outline">
-                  Searching: "{searchTerm}"
-                </Badge>
+                </div>
+              )}
+              
+              {/* No dishes message when expanded but filtered out */}
+              {expandedCategories.has(category.id) && category.dishes.length === 0 && (
+                <div className="mt-6 p-6 text-center bg-card rounded-lg border border-border">
+                  <p className="text-muted-foreground">
+                    No dishes match your current filters in this category
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      setSearchTerm("");
+                      setFilter('all');
+                    }}
+                    className="mt-3"
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
               )}
             </div>
-
-            {/* Dishes Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredDishes.map((dish) => (
-                <DishCard key={dish.id} dish={dish} />
-              ))}
+          ))}
+          
+          {/* No results message */}
+          {filteredCategories.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-xl text-muted-foreground mb-4">
+                No categories or dishes found matching your search
+              </p>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setSearchTerm("");
+                  setFilter('all');
+                }}
+              >
+                Clear Search
+              </Button>
             </div>
-
-            {/* No Results */}
-            {filteredDishes.length === 0 && (
-              <div className="text-center py-16">
-                <p className="text-xl text-muted-foreground">
-                  No dishes found matching your criteria
-                </p>
-                <Button 
-                  variant="outline" 
-                  onClick={() => {
-                    setSearchTerm("");
-                    setFilter('all');
-                  }}
-                  className="mt-4"
-                >
-                  Clear Filters
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </section>
   );

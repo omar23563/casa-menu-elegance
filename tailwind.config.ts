@@ -72,6 +72,11 @@ export default {
 					black: 'hsl(var(--brand-black))',
 					white: 'hsl(var(--brand-white))',
 					gray: 'hsl(var(--brand-gray))',
+					gold: 'hsl(var(--brand-gold))',
+					'gold-light': 'hsl(var(--brand-gold-light))',
+					green: 'hsl(var(--brand-green))',
+					cream: 'hsl(var(--brand-cream))',
+					'warm-gray': 'hsl(var(--brand-warm-gray))',
 				}
 			},
 			borderRadius: {
